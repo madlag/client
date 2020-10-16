@@ -149,6 +149,19 @@ class SendManager(object):
                 result.response.login_response.active_entity = self._entity
             self._result_q.put(result)
 
+    def send_request_alert(self, record):
+        alert = record.request.alert
+        success = (
+            self._api.notify_scriptable_run_alert(
+                alert.title, alert.text, alert.severity
+            )
+            == "true"
+        )
+        result = wandb_internal_pb2.Result(uuid=record.uuid)
+        alert_resp = result.response.alert_response
+        alert_resp.success = success
+        self._result_q.put(result)
+
     def send_exit(self, data):
         exit = data.exit
         self._exit_code = exit.exit_code

@@ -228,6 +228,9 @@ class HandleManager(object):
     def handle_request_status(self, record):
         self._dispatch_record(record)
 
+    def handle_request_alert(self, record):
+        self._dispatch_record(record)
+
     def handle_request_get_summary(self, data):
         result = wandb_internal_pb2.Result(uuid=data.uuid)
         for key, value in six.iteritems(self._consolidated_summary):

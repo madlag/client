@@ -350,6 +350,7 @@ class BackendSender(object):
         sampled_history=None,
         run_start=None,
         check_version=None,
+        alert=None,
     ):
         request = wandb_internal_pb2.Request()
         if login:
@@ -370,6 +371,8 @@ class BackendSender(object):
             request.run_start.CopyFrom(run_start)
         elif check_version:
             request.check_version.CopyFrom(check_version)
+        elif alert:
+            request.alert.CopyFrom(alert)
         else:
             raise Exception("Invalid request")
         record = self._make_record(request=request)
@@ -623,6 +626,16 @@ class BackendSender(object):
         sampled_history_response = result.response.sampled_history_response
         assert sampled_history_response
         return sampled_history_response
+
+    def communicate_alert(self, title, text, severity):
+        alert_request = wandb_internal_pb2.AlertRequest()
+        alert_request.title = title
+        alert_request.text = text
+        alert_request.severity = severity
+        request = self._make_request(alert=alert_request,)
+        result = self._communicate(request)
+        alert_response = result.response.alert_response
+        return alert_response
 
     def join(self):
         # shutdown

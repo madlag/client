@@ -1704,6 +1704,12 @@ class Run(RunBase):
         self._backend.interface.publish_artifact(self, artifact, aliases)
         return artifact
 
+    def alert(self, title, text, severity=None):
+        severity = severity or wandb.AlertSeverity.INFO
+        if severity not in (wandb.AlertSeverity.INFO, wandb.AlertSeverity.WARN, wandb.AlertSeverity.ERROR):
+            raise ValueError("severity must be one of 'INFO', 'WARN', or 'ERROR'")
+        self._backend.interface.communicate_alert(title, text, severity.value)
+
     def _set_console(self, use_redirect, stdout_slave_fd, stderr_slave_fd):
         self._use_redirect = use_redirect
         self._stdout_slave_fd = stdout_slave_fd
