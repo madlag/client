@@ -1706,7 +1706,11 @@ class Run(RunBase):
 
     def alert(self, title, text, severity=None):
         severity = severity or wandb.AlertSeverity.INFO
-        if severity not in (wandb.AlertSeverity.INFO, wandb.AlertSeverity.WARN, wandb.AlertSeverity.ERROR):
+        if severity not in (
+            wandb.AlertSeverity.INFO,
+            wandb.AlertSeverity.WARN,
+            wandb.AlertSeverity.ERROR,
+        ):
             raise ValueError("severity must be one of 'INFO', 'WARN', or 'ERROR'")
         self._backend.interface.communicate_alert(title, text, severity.value)
 
